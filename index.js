@@ -1,6 +1,6 @@
 //--------------- 💻 🤖 I N D E X -------------
 
-const mc = require('minecraft-bedrock-protocol');
+const mc = require('bedrock-protocol'); // Cambiado
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -15,7 +15,6 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Servir página de estado
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', (socket) => {
@@ -54,14 +53,14 @@ function connectBot() {
   });
 }
 
-// Función AntiAFK: enviar movimiento cada 10s
+// AntiAFK: enviar movimiento cada 10s
 function antiafk() {
   setInterval(() => {
-    if (bot && isConnected) {
-      bot.queue('move', { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, onGround: true });
+    if(bot && isConnected) {
+      bot.queue('move', { x:0, y:0, z:0, yaw:0, pitch:0, onGround:true });
     }
   }, 10000);
 }
 
-// Conectar el bot por primera vez
+// Conectar bot la primera vez
 connectBot();
