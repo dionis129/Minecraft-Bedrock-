@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Estado del Bot</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align:center; margin-top:50px; }
+  .status { font-size: 2em; margin-top:20px; }
+  .connected { color: green; }
+  .disconnected { color: red; }
+</style>
+</head>
+<body>
+<h1>Estado del Bot de Minecraft</h1>
+<div class="status disconnected" id="status">Desconectado</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const statusEl = document.getElementById('status');
+  const socket = io();
+
+  socket.on('status', (state) => {
+    statusEl.textContent = state;
+    if(state === 'Conectado') {
+      statusEl.classList.add('connected');
+      statusEl.classList.remove('disconnected');
+    } else {
+      statusEl.classList.add('disconnected');
+      statusEl.classList.remove('connected');
+    }
+  });
+</script>
+</body>
+</html>
