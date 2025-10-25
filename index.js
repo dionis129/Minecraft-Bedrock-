@@ -1,20 +1,19 @@
 //--------------- 💻 🤖 I N D E X -------------
 
-const mc = require('minecraft-protocol');
+const mc = require('minecraft-bedrock-protocol');
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
 const HOST = 'dionis169.aternos.me';
 const PORT = 30590;
 const BOT_NAME = 'DionisBot';
 let bot;
-
 let isConnected = false;
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 // Servir página de estado
 app.use(express.static(__dirname + '/public'));
@@ -36,14 +35,14 @@ function connectBot() {
     version: '1.21.111.1'
   });
 
-  bot.on('login', () => {
+  bot.on('connect', () => {
     console.log('Bot conectado');
     isConnected = true;
     io.emit('status', 'Conectado');
     antiafk();
   });
 
-  bot.on('end', () => {
+  bot.on('disconnect', () => {
     console.log('Bot desconectado, reconectando en 15s...');
     isConnected = false;
     io.emit('status', 'Desconectado');
@@ -55,21 +54,14 @@ function connectBot() {
   });
 }
 
-// Función AntiAFK simple: enviar movimiento cada 10s
+// Función AntiAFK: enviar movimiento cada 10s
 function antiafk() {
   setInterval(() => {
-    if(bot && isConnected){
-      bot.write('move', {
-        x: 0,
-        y: 0,
-        z: 0,
-        yaw: 0,
-        pitch: 0,
-        onGround: true
-      });
+    if (bot && isConnected) {
+      bot.queue('move', { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, onGround: true });
     }
   }, 10000);
 }
 
-// Conectar bot por primera vez
+// Conectar el bot por primera vez
 connectBot();
