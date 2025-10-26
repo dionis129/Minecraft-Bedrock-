@@ -5,8 +5,8 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 
-const HOST = 'dionis169.aternos.me';
-const PORT = 30590; // Verifica tu puerto de Bedrock
+const HOST = 'dionis169-d3h9.aternos.me';
+const PORT = 35501; // Verifica tu puerto de Bedrock
 const BOT_NAME = 'DionisBot';
 
 let bot;
