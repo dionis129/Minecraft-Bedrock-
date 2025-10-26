@@ -1,13 +1,14 @@
 //--------------- 💻 🤖 I N D E X -------------
 
-const mc = require('bedrock-protocol'); // Cambiado
+const mc = require('bedrock-protocol');
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 
 const HOST = 'dionis169.aternos.me';
-const PORT = 30590;
+const PORT = 30590; // Verifica tu puerto de Bedrock
 const BOT_NAME = 'DionisBot';
+
 let bot;
 let isConnected = false;
 
@@ -25,8 +26,9 @@ server.listen(3000, () => {
   console.log('Página de estado corriendo en http://localhost:3000');
 });
 
-// Función para conectar el bot
+// Función para conectar el bot con reintento si el servidor está apagado
 function connectBot() {
+  console.log('Intentando conectar el bot...');
   bot = mc.createClient({
     host: HOST,
     port: PORT,
@@ -35,7 +37,7 @@ function connectBot() {
   });
 
   bot.on('connect', () => {
-    console.log('Bot conectado');
+    console.log('Bot conectado ✅');
     isConnected = true;
     io.emit('status', 'Conectado');
     antiafk();
@@ -49,18 +51,23 @@ function connectBot() {
   });
 
   bot.on('error', (err) => {
-    console.error('Error del bot:', err);
+    console.error('Error del bot:', err.message);
+    // Si da timeout de RakNet, esperar 15s antes de reconectar
+    if (err.message.includes('RakTimeout')) {
+      console.log('Servidor apagado o no responde, reintentando en 15s...');
+      setTimeout(connectBot, 15000);
+    }
   });
 }
 
 // AntiAFK: enviar movimiento cada 10s
 function antiafk() {
   setInterval(() => {
-    if(bot && isConnected) {
-      bot.queue('move', { x:0, y:0, z:0, yaw:0, pitch:0, onGround:true });
+    if (bot && isConnected) {
+      bot.queue('move', { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, onGround: true });
     }
   }, 10000);
 }
 
-// Conectar bot la primera vez
+// Conectar el bot por primera vez
 connectBot();
