@@ -33,7 +33,7 @@ function connectBot() {
     host: HOST,
     port: PORT,
     username: BOT_NAME,
-    version: '1.21.111.1'
+    version: '1.21.111'
   });
 
   bot.on('connect', () => {
